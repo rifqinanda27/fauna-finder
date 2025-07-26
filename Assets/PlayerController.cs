@@ -5,7 +5,6 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float gravity = -9.81f;
-    public float jumpHeight = 2f;
     public Transform cam;
 
     private CharacterController controller;
@@ -17,10 +16,12 @@ public class PlayerController : MonoBehaviour
 
     private Animator animator;
 
+    public FixedJoystick joystick; // ⚠️ Ganti ini kalau pakai joystick lain
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
-        animator = GetComponentInChildren<Animator>(); // pastikan Animator ada di child (bukan parent model)
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -30,12 +31,11 @@ public class PlayerController : MonoBehaviour
         if (isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
-        // Movement input
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
+        // Input dari fixed joystick dan keyboard
+        float h = joystick.Horizontal + Input.GetAxis("Horizontal");
+        float v = joystick.Vertical + Input.GetAxis("Vertical");
         Vector3 direction = new Vector3(h, 0f, v).normalized;
 
-        // Rotasi dan gerak
         if (direction.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
@@ -49,13 +49,6 @@ public class PlayerController : MonoBehaviour
         else
         {
             animator.SetFloat("Speed", 0f);
-        }
-
-        // Lompat
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            animator.SetTrigger("Jump");
         }
 
         // Gravity
