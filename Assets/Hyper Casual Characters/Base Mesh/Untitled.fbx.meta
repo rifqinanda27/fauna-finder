@@ -1,21 +1,9 @@
 fileFormatVersion: 2
-guid: d6bb2aff0b9dc0241be3cc17cda94ab3
-AssetOrigin:
-  serializedVersion: 1
-  productId: 305473
-  packageName: Stickman Hyper Casual Characters
-  packageVersion: 1.0
-  assetPath: Assets/Hyper Casual Characters/Base Mesh/stickman_5.fbx
-  uploadId: 759220
+guid: c00d44d8274c1624fa4752754570ae75
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: beach
-    second: {fileID: 2100000, guid: 8d0b201d5bde4a648b780dab3416109d, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
