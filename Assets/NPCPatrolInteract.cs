@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class NPCPatrolInteract : MonoBehaviour
 {
-    public Transform[] waypoints; // Set in Inspector
+    public Transform[] waypoints;
     public float moveSpeed = 2f;
     public float stoppingDistance = 0.2f;
     public float interactionRange = 2f;
@@ -11,17 +11,20 @@ public class NPCPatrolInteract : MonoBehaviour
     private int currentWaypoint = 0;
     private bool isInteracting = false;
     private Transform player;
+    private Animator animator;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        animator = GetComponent<Animator>();
     }
 
     void Update()
     {
         if (isInteracting)
         {
-            // NPC is interacting, do not move
+            animator.SetBool("isWalking", false); // idle saat interaksi
+
             if (Input.GetKeyDown(interactKey))
             {
                 EndInteraction();
@@ -31,7 +34,6 @@ public class NPCPatrolInteract : MonoBehaviour
 
         Patrol();
 
-        // Check interaction range
         if (Vector3.Distance(transform.position, player.position) <= interactionRange)
         {
             if (Input.GetKeyDown(interactKey))
@@ -48,14 +50,15 @@ public class NPCPatrolInteract : MonoBehaviour
         Transform target = waypoints[currentWaypoint];
         Vector3 dir = (target.position - transform.position).normalized;
 
-        // Move toward the current waypoint
+        // NPC jalan
         transform.position += dir * moveSpeed * Time.deltaTime;
 
-        // Face direction of movement
+        // Rotasi hadap ke arah gerak
         if (dir != Vector3.zero)
             transform.forward = dir;
 
-        // If close to the waypoint, go to the next one
+        animator.SetBool("isWalking", true); // animasi jalan ON
+
         if (Vector3.Distance(transform.position, target.position) < stoppingDistance)
         {
             currentWaypoint = (currentWaypoint + 1) % waypoints.Length;
@@ -65,8 +68,8 @@ public class NPCPatrolInteract : MonoBehaviour
     void StartInteraction()
     {
         isInteracting = true;
+        animator.SetBool("isWalking", false); // pastikan idle saat mulai interaksi
         Debug.Log("Started interaction with NPC!");
-        // TODO: Trigger dialogue, animation, etc.
     }
 
     void EndInteraction()
