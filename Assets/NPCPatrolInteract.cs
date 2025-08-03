@@ -24,6 +24,7 @@ public class NPCPatrolInteract : MonoBehaviour
         if (isInteracting)
         {
             animator.SetBool("isWalking", false); // idle saat interaksi
+            LookAtPlayer(); // ⬅️ Tambahkan ini
 
             if (Input.GetKeyDown(interactKey))
             {
@@ -50,14 +51,12 @@ public class NPCPatrolInteract : MonoBehaviour
         Transform target = waypoints[currentWaypoint];
         Vector3 dir = (target.position - transform.position).normalized;
 
-        // NPC jalan
         transform.position += dir * moveSpeed * Time.deltaTime;
 
-        // Rotasi hadap ke arah gerak
         if (dir != Vector3.zero)
             transform.forward = dir;
 
-        animator.SetBool("isWalking", true); // animasi jalan ON
+        animator.SetBool("isWalking", true);
 
         if (Vector3.Distance(transform.position, target.position) < stoppingDistance)
         {
@@ -68,7 +67,7 @@ public class NPCPatrolInteract : MonoBehaviour
     void StartInteraction()
     {
         isInteracting = true;
-        animator.SetBool("isWalking", false); // pastikan idle saat mulai interaksi
+        animator.SetBool("isWalking", false);
         Debug.Log("Started interaction with NPC!");
     }
 
@@ -76,6 +75,14 @@ public class NPCPatrolInteract : MonoBehaviour
     {
         isInteracting = false;
         Debug.Log("Ended interaction with NPC!");
+    }
+
+    void LookAtPlayer()
+    {
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0; // biar nggak nunduk/ngadek
+        if (direction != Vector3.zero)
+            transform.forward = direction;
     }
 
     void OnDrawGizmosSelected()
