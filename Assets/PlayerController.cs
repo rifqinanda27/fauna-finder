@@ -4,7 +4,10 @@ using System.IO; // untuk menyimpan file PNG
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
+    public float walkSpeed = 5f; // kecepatan jalan normal
+    public float runSpeed = 8f;  // kecepatan lari saat Shift
+    private float currentSpeed;  // kecepatan yang sedang dipakai
+
     public float gravity = -9.81f;
     public Transform cam; // untuk third person
     public Camera fpsCam; // FPS camera biasa
@@ -37,6 +40,8 @@ public class PlayerController : MonoBehaviour
         fpsCam.gameObject.SetActive(false);
         fpsLook.initialYaw = fpsCamHolder.transform.eulerAngles.y;
         fpsLook.yaw = fpsLook.initialYaw;
+
+        currentSpeed = walkSpeed; // awalnya jalan biasa
     }
 
     void Update()
@@ -44,7 +49,6 @@ public class PlayerController : MonoBehaviour
         // Toggle masuk mode FPS foto
         if (Input.GetKeyDown(KeyCode.F))
         {
-            Debug.Log("FPS Mode: " + isInPhotoMode);
             isInPhotoMode = !isInPhotoMode;
             fpsCam.gameObject.SetActive(isInPhotoMode);
             cam.gameObject.SetActive(!isInPhotoMode);
@@ -62,12 +66,13 @@ public class PlayerController : MonoBehaviour
                 fpsLook.yaw = camEuler.y;
                 fpsLook.pitch = camEuler.x;
             }
-
-            Debug.DrawRay(fpsCam.transform.position, fpsCam.transform.forward * 100f, Color.red, 2f);
         }
 
         if (!isInPhotoMode)
         {
+            // Deteksi sprint
+            currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+
             isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckDistance, groundMask);
             if (isGrounded && velocity.y < 0)
                 velocity.y = -2f;
@@ -78,18 +83,25 @@ public class PlayerController : MonoBehaviour
 
             if (direction.magnitude >= 0.1f)
             {
+                bool running = Input.GetKey(KeyCode.LeftShift);
+
+                currentSpeed = running ? runSpeed : walkSpeed;
+
                 float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
                 transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
 
                 Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-                controller.Move(moveDir.normalized * moveSpeed * Time.deltaTime);
+                controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
 
-                animator.SetFloat("Speed", 1f);
+                animator.SetBool("IsRunning", running);
+                animator.SetFloat("Speed", 1f); // 1f untuk jalan, Run diatur via IsRunning
             }
             else
             {
                 animator.SetFloat("Speed", 0f);
+                animator.SetBool("IsRunning", false);
             }
+
 
             velocity.y += gravity * Time.deltaTime;
             controller.Move(velocity * Time.deltaTime);
@@ -97,7 +109,6 @@ public class PlayerController : MonoBehaviour
 
         if (isInPhotoMode && Input.GetMouseButtonDown(0)) // Tombol kiri mouse
         {
-            Debug.Log("Klik kiri di mode foto!");
             TakePhoto();
         }
     }
@@ -109,21 +120,10 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 100f))
         {
-            Debug.Log("Foto mengenai: " + hit.collider.name);
-
             if (hit.collider.CompareTag("PhotoTarget"))
             {
-                Debug.Log("Target berhasil difoto!");
                 SaveScreenshot();
             }
-            else
-            {
-                Debug.Log("Bukan target foto.");
-            }
-        }
-        else
-        {
-            Debug.Log("Tidak ada objek yang difoto.");
         }
     }
 
@@ -149,7 +149,5 @@ public class PlayerController : MonoBehaviour
         string fileName = "Photo_" + System.DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
         string fullPath = Path.Combine(dirPath, fileName);
         File.WriteAllBytes(fullPath, bytes);
-
-        Debug.Log("Foto disimpan di: " + fullPath);
     }
 }
