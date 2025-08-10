@@ -144,11 +144,20 @@ public class PlayerController : MonoBehaviour
         Destroy(rt);
 
         byte[] bytes = photo.EncodeToPNG();
-        string dirPath = Path.Combine(Application.dataPath, photoSaveFolder);
+        // string dirPath = Path.Combine(Application.dataPath, photoSaveFolder);
+        string dirPath = photoSaveFolder;
         if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 
         string fileName = "Photo_" + System.DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
         string fullPath = Path.Combine(dirPath, fileName);
         File.WriteAllBytes(fullPath, bytes);
+    }
+
+    // Di PlayerController
+    public void Respawn(Vector3 position)
+    {
+        controller.enabled = false; // disable dulu biar nggak bentrok sama CharacterController
+        transform.position = position;
+        controller.enabled = true;
     }
 }

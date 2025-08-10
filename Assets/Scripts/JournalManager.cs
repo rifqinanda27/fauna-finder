@@ -56,7 +56,7 @@ public class JournalManager : MonoBehaviour
         panelObjectives.SetActive(true);
         panelPhotos.SetActive(false);
         panelSettings.SetActive(false);
-        HighlightButton(buttonObjectives);
+        // HighlightButton(buttonObjectives);
     }
 
     public void OpenPhotos()
@@ -64,7 +64,7 @@ public class JournalManager : MonoBehaviour
         panelObjectives.SetActive(false);
         panelPhotos.SetActive(true);
         panelSettings.SetActive(false);
-        HighlightButton(buttonPhotos);
+        // HighlightButton(buttonPhotos);
     }
 
     public void OpenSettings()
@@ -72,7 +72,7 @@ public class JournalManager : MonoBehaviour
         panelObjectives.SetActive(false);
         panelPhotos.SetActive(false);
         panelSettings.SetActive(true);
-        HighlightButton(buttonSettings);
+        // HighlightButton(buttonSettings);
     }
 
     public void ExitGame()
@@ -82,15 +82,15 @@ public class JournalManager : MonoBehaviour
     }
 
     // Tambahan opsional: highlight tombol aktif
-    private void HighlightButton(Button selected)
-    {
-        Color normalColor = Color.white;
-        Color highlightColor = Color.yellow;
+    // private void HighlightButton(Button selected)
+    // {
+    //     Color normalColor = Color.white;
+    //     Color highlightColor = Color.yellow;
 
-        buttonObjectives.image.color = normalColor;
-        buttonPhotos.image.color = normalColor;
-        buttonSettings.image.color = normalColor;
+    //     buttonObjectives.image.color = normalColor;
+    //     buttonPhotos.image.color = normalColor;
+    //     buttonSettings.image.color = normalColor;
 
-        selected.image.color = highlightColor;
-    }
+    //     selected.image.color = highlightColor;
+    // }
 }

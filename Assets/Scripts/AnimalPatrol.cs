@@ -95,4 +95,18 @@ public class AnimalPatrolChase : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, stopChaseDistance);
     }
+
+    public Transform respawnPoint;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            PlayerController pc = other.GetComponent<PlayerController>();
+            if (pc != null)
+            {
+                pc.Respawn(respawnPoint.position);
+            }
+        }
+    }
 }

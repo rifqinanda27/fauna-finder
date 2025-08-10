@@ -425,7 +425,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 20
   m_Viewport: {fileID: 1154255363}
   m_HorizontalScrollbar: {fileID: 622428992}
   m_VerticalScrollbar: {fileID: 1379142231}
@@ -1763,7 +1763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5227831390482902109, guid: fc4174834ee7f204d90018522879a07d, type: 3}
       propertyPath: m_Name
-      value: stickman_2
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5227831390482902109, guid: fc4174834ee7f204d90018522879a07d, type: 3}
       propertyPath: m_TagString
@@ -1840,7 +1840,41 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5227831390482902109, guid: fc4174834ee7f204d90018522879a07d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1266272079}
+    - targetCorrespondingSourceObject: {fileID: 5227831390482902109, guid: fc4174834ee7f204d90018522879a07d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1266272082}
   m_SourcePrefab: {fileID: 100100000, guid: fc4174834ee7f204d90018522879a07d, type: 3}
+--- !u!1 &963332535
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 963332536}
+  m_Layer: 0
+  m_Name: respawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &963332536
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963332535}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -57.63924, y: 0, z: -87.41963}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &975261159
 GameObject:
   m_ObjectHideFlags: 0
@@ -1989,13 +2023,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 60
-    m_Alignment: 4
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Foto Hewan Karnivora
+  m_Text: '- Foto Hewan Karnivora'
 --- !u!222 &1064439438
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2314,6 +2348,33 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1.1, z: 0}
+--- !u!54 &1266272082
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1266272075}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &1273867671
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2591,6 +2652,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1460491115}
   - component: {fileID: 1460491116}
+  - component: {fileID: 1460491117}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -2614,8 +2676,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000070434275}
-  m_SizeDelta: {x: 0, y: 300}
+  m_AnchoredPosition: {x: 0, y: 0.00014053611}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1460491116
 MonoBehaviour:
@@ -2641,6 +2703,20 @@ MonoBehaviour:
   m_Spacing: {x: 60, y: 60}
   m_Constraint: 1
   m_ConstraintCount: 3
+--- !u!114 &1460491117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460491114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &1555617844
 GameObject:
   m_ObjectHideFlags: 0
@@ -3269,6 +3345,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   photoPrefab: {fileID: 6754105572347871235, guid: 01fb8d77f8b0af243b3c4ca94a5c16eb, type: 3}
   gridParent: {fileID: 1460491115}
+  thumbnailWidth: 256
+  thumbnailHeight: 144
 --- !u!1 &1880519409
 GameObject:
   m_ObjectHideFlags: 0
@@ -3503,7 +3581,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 2
@@ -3531,6 +3609,7 @@ MonoBehaviour:
   stoppingDistance: 2
   chaseRange: 20
   stopChaseDistance: 1.5
+  respawnPoint: {fileID: 963332536}
 --- !u!1 &2050463766 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6270469157483668088, guid: fc4174834ee7f204d90018522879a07d, type: 3}
@@ -3755,3 +3834,4 @@ SceneRoots:
   - {fileID: 1688688309}
   - {fileID: 637890938}
   - {fileID: 290026574}
+  - {fileID: 963332536}
