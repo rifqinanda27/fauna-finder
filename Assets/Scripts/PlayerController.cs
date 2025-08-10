@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     // Tambahan untuk foto
     public int photoWidth = 1920;
     public int photoHeight = 1080;
-    public string photoSaveFolder = "Photos"; // folder dalam Assets
+    public string photoSaveFolder; // folder dalam Assets
 
     void Start()
     {
@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
         fpsLook.yaw = fpsLook.initialYaw;
 
         currentSpeed = walkSpeed; // awalnya jalan biasa
+        photoSaveFolder = Path.Combine(Application.streamingAssetsPath, "Photos");
     }
 
     void Update()
