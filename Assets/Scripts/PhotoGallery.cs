@@ -6,10 +6,10 @@ using System.Collections;
 
 public class PhotoGallery : MonoBehaviour
 {
-    public GameObject photoPrefab; // prefab foto (Image)
-    public Transform gridParent;   // Content dari Grid Layout Group
-    public int thumbnailWidth = 256; // lebar thumbnail
-    public int thumbnailHeight = 144; // tinggi thumbnail
+    public GameObject photoPrefab; // prefab foto (punya Image & PhotoItem)
+    public Transform gridParent;
+    public int thumbnailWidth = 256;
+    public int thumbnailHeight = 144;
 
     void OnEnable()
     {
@@ -18,7 +18,7 @@ public class PhotoGallery : MonoBehaviour
 
     IEnumerator LoadPhotosAsync()
     {
-        // Hapus foto lama
+        // Bersihkan grid
         foreach (Transform child in gridParent)
         {
             Destroy(child.gameObject);
@@ -39,7 +39,7 @@ public class PhotoGallery : MonoBehaviour
             if (filePath.EndsWith(".png") || filePath.EndsWith(".jpg") || filePath.EndsWith(".jpeg"))
             {
                 yield return StartCoroutine(LoadImage(filePath));
-                yield return null; // jeda 1 frame agar tidak freeze
+                yield return null;
             }
         }
     }
@@ -53,17 +53,21 @@ public class PhotoGallery : MonoBehaviour
             if (uwr.result == UnityWebRequest.Result.Success)
             {
                 Texture2D originalTex = DownloadHandlerTexture.GetContent(uwr);
-
-                // Buat thumbnail
                 Texture2D thumbnail = ResizeTexture(originalTex, thumbnailWidth, thumbnailHeight);
 
-                // Buat prefab foto
                 GameObject photoObj = Instantiate(photoPrefab, gridParent);
-                Image img = photoObj.GetComponent<Image>();
 
-                // Ubah jadi sprite
+                // Set sprite thumbnail
+                Image img = photoObj.GetComponent<Image>();
                 Sprite sprite = Sprite.Create(thumbnail, new Rect(0, 0, thumbnail.width, thumbnail.height), Vector2.one * 0.5f);
                 img.sprite = sprite;
+
+                // Kasih path ke PhotoItem biar bisa klik
+                PhotoItem item = photoObj.GetComponent<PhotoItem>();
+                if (item != null)
+                {
+                    item.Setup(path);
+                }
             }
             else
             {
@@ -72,7 +76,6 @@ public class PhotoGallery : MonoBehaviour
         }
     }
 
-    // Fungsi resize sederhana untuk buat thumbnail
     Texture2D ResizeTexture(Texture2D source, int width, int height)
     {
         Texture2D result = new Texture2D(width, height, source.format, false);

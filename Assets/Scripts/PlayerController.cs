@@ -123,12 +123,21 @@ public class PlayerController : MonoBehaviour
         {
             if (hit.collider.CompareTag("PhotoTarget"))
             {
-                SaveScreenshot();
+                // Ambil info target
+                PhotoTargetInfo targetInfo = hit.collider.GetComponent<PhotoTargetInfo>();
+                if (targetInfo != null)
+                {
+                    SaveScreenshot(targetInfo);
+                }
+                else
+                {
+                    Debug.LogWarning("PhotoTargetInfo tidak ditemukan di objek!");
+                }
             }
         }
     }
 
-    void SaveScreenshot()
+    void SaveScreenshot(PhotoTargetInfo info)
     {
         RenderTexture rt = new RenderTexture(photoWidth, photoHeight, 24);
         fpsCam.targetTexture = rt;
@@ -143,15 +152,29 @@ public class PlayerController : MonoBehaviour
         RenderTexture.active = null;
         Destroy(rt);
 
-        byte[] bytes = photo.EncodeToPNG();
-        // string dirPath = Path.Combine(Application.dataPath, photoSaveFolder);
-        string dirPath = photoSaveFolder;
-        if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+        if (!Directory.Exists(photoSaveFolder))
+            Directory.CreateDirectory(photoSaveFolder);
 
         string fileName = "Photo_" + System.DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
-        string fullPath = Path.Combine(dirPath, fileName);
-        File.WriteAllBytes(fullPath, bytes);
+        string fullPath = Path.Combine(photoSaveFolder, fileName);
+
+        File.WriteAllBytes(fullPath, photo.EncodeToPNG());
+
+        // Simpan metadata JSON
+        PhotoData data = new PhotoData
+        {
+            fileName = fileName,
+            animalName = info.animalName,
+            category = info.category,
+            description = info.description
+        };
+
+        string jsonPath = Path.Combine(photoSaveFolder, fileName.Replace(".png", ".json"));
+        File.WriteAllText(jsonPath, JsonUtility.ToJson(data, true));
+
+        Debug.Log($"Foto dan data tersimpan: {fullPath}");
     }
+
 
     // Di PlayerController
     public void Respawn(Vector3 position)
@@ -160,4 +183,14 @@ public class PlayerController : MonoBehaviour
         transform.position = position;
         controller.enabled = true;
     }
+
+    [System.Serializable]
+    public class PhotoData
+    {
+        public string fileName;      // nama file foto
+        public string animalName;    // nama hewan
+        public string category;      // kategori
+        public string description;   // deskripsi
+    }
+
 }
