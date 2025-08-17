@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     public float runSpeed = 8f;  // kecepatan lari saat Shift
     private float currentSpeed;  // kecepatan yang sedang dipakai
 
+    private bool canMove = true;
+
     public float gravity = -9.81f;
     public Transform cam; // untuk third person
     public Camera fpsCam; // FPS camera biasa
@@ -47,6 +49,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (!canMove)
+        {
+            animator.SetFloat("Speed", 0f);
+            animator.SetBool("IsRunning", false);
+            return;
+        }
         // Toggle masuk mode FPS foto
         if (Input.GetKeyDown(KeyCode.F))
         {
@@ -112,6 +120,12 @@ public class PlayerController : MonoBehaviour
         {
             TakePhoto();
         }
+    }
+
+    
+    public void SetCanMove(bool value)
+    {
+        canMove = value;
     }
 
     void TakePhoto()
