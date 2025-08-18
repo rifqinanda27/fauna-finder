@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement; // <- perlu untuk LoadScene
 
 public class JournalManager : MonoBehaviour
 {
@@ -13,25 +14,28 @@ public class JournalManager : MonoBehaviour
     public Button buttonPhotos;
     public Button buttonSettings;
 
+    [Header("Popup Exit")]
+    public GameObject confirmExitPanel; // panel popup konfirmasi
+
     private bool isJournalOpen = false;
 
     void Start()
     {
         journalCanvas.SetActive(false);
+        confirmExitPanel.SetActive(false); // pastikan popup tersembunyi
 
         // Pasang listener ke tombol
         buttonObjectives.onClick.AddListener(OpenObjectives);
         buttonPhotos.onClick.AddListener(OpenPhotos);
         buttonSettings.onClick.AddListener(OpenSettings);
 
-        OpenObjectives(); // Tampilkan panel default saat jurnal dibuka
+        OpenObjectives(); // panel default
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.J))
         {
-            Debug.Log("Tombol J ditekan");
             ToggleJournal();
         }
     }
@@ -41,14 +45,24 @@ public class JournalManager : MonoBehaviour
         isJournalOpen = !isJournalOpen;
         journalCanvas.SetActive(isJournalOpen);
 
-        Time.timeScale = isJournalOpen ? 0f : 1f; // Pause game saat jurnal dibuka
+        Time.timeScale = isJournalOpen ? 0f : 1f;
         Cursor.lockState = isJournalOpen ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = isJournalOpen;
 
         if (isJournalOpen)
         {
-            OpenObjectives(); // Default buka panel Objectives
+            OpenObjectives();
         }
+    }
+
+    public void CloseJournal()
+    {
+        isJournalOpen = false;
+        journalCanvas.SetActive(false);
+
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void OpenObjectives()
@@ -56,7 +70,6 @@ public class JournalManager : MonoBehaviour
         panelObjectives.SetActive(true);
         panelPhotos.SetActive(false);
         panelSettings.SetActive(false);
-        // HighlightButton(buttonObjectives);
     }
 
     public void OpenPhotos()
@@ -64,7 +77,6 @@ public class JournalManager : MonoBehaviour
         panelObjectives.SetActive(false);
         panelPhotos.SetActive(true);
         panelSettings.SetActive(false);
-        // HighlightButton(buttonPhotos);
     }
 
     public void OpenSettings()
@@ -72,25 +84,22 @@ public class JournalManager : MonoBehaviour
         panelObjectives.SetActive(false);
         panelPhotos.SetActive(false);
         panelSettings.SetActive(true);
-        // HighlightButton(buttonSettings);
     }
 
-    public void ExitGame()
+    // === Tombol Exit di jurnal ===
+    public void OnExitButtonPressed()
     {
-        Debug.Log("Keluar dari game...");
-        Application.Quit();
+        confirmExitPanel.SetActive(true); // tampilkan popup konfirmasi
     }
 
-    // Tambahan opsional: highlight tombol aktif
-    // private void HighlightButton(Button selected)
-    // {
-    //     Color normalColor = Color.white;
-    //     Color highlightColor = Color.yellow;
+    public void OnConfirmExitYes()
+    {
+        Time.timeScale = 1f; // resume biar scene load normal
+        SceneManager.LoadScene("MainMenu"); // ganti "MainMenu" sesuai nama scene menu kamu
+    }
 
-    //     buttonObjectives.image.color = normalColor;
-    //     buttonPhotos.image.color = normalColor;
-    //     buttonSettings.image.color = normalColor;
-
-    //     selected.image.color = highlightColor;
-    // }
+    public void OnConfirmExitNo()
+    {
+        confirmExitPanel.SetActive(false); // tutup popup
+    }
 }

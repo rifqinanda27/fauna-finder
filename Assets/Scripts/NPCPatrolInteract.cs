@@ -1,12 +1,20 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class NPCPatrolInteract : MonoBehaviour
 {
+    [Header("Patrol Settings")]
     public Transform[] waypoints;
     public float moveSpeed = 2f;
     public float stoppingDistance = 0.2f;
+
+    [Header("Interaction Settings")]
     public float interactionRange = 2f;
     public KeyCode interactKey = KeyCode.E;
+
+    [Header("Dialog Settings")]
+    [TextArea(2, 5)]
+    public List<string> dialogLines; // ⬅️ Bisa isi langsung di Inspector
 
     private int currentWaypoint = 0;
     private bool isInteracting = false;
@@ -23,14 +31,9 @@ public class NPCPatrolInteract : MonoBehaviour
     {
         if (isInteracting)
         {
-            animator.SetBool("isWalking", false); // idle saat interaksi
-            LookAtPlayer(); // ⬅️ Tambahkan ini
-
-            if (Input.GetKeyDown(interactKey))
-            {
-                EndInteraction();
-            }
-            return;
+            animator.SetBool("isWalking", false);
+            LookAtPlayer();
+            return; // hentikan patrol saat interaksi
         }
 
         Patrol();
@@ -66,21 +69,27 @@ public class NPCPatrolInteract : MonoBehaviour
 
     void StartInteraction()
     {
+        if (dialogLines == null || dialogLines.Count == 0) return;
+
         isInteracting = true;
         animator.SetBool("isWalking", false);
-        Debug.Log("Started interaction with NPC!");
+
+        // Panggil dialog manager dan kasih callback EndInteraction
+        DialogManager.Instance.StartDialog(dialogLines, EndInteraction);
     }
 
     void EndInteraction()
     {
         isInteracting = false;
-        Debug.Log("Ended interaction with NPC!");
+        Debug.Log($"{gameObject.name} selesai interaksi.");
     }
 
     void LookAtPlayer()
     {
+        if (player == null) return;
+
         Vector3 direction = (player.position - transform.position).normalized;
-        direction.y = 0; // biar nggak nunduk/ngadek
+        direction.y = 0;
         if (direction != Vector3.zero)
             transform.forward = direction;
     }
