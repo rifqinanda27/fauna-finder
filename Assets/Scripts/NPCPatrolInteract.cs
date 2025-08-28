@@ -21,6 +21,10 @@ public class NPCPatrolInteract : MonoBehaviour
     private Transform player;
     private Animator animator;
 
+    [Header("Objective Settings")]
+    public List<string> objectives; // ⬅️ bisa diisi langsung di Inspector
+
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -82,6 +86,15 @@ public class NPCPatrolInteract : MonoBehaviour
     {
         isInteracting = false;
         Debug.Log($"{gameObject.name} selesai interaksi.");
+
+        // Tambahkan objectives dari NPC ini
+        if (objectives != null && objectives.Count > 0)
+        {
+            foreach (string obj in objectives)
+            {
+                ObjectiveManager.Instance.AddObjective(obj);
+            }
+        }
     }
 
     void LookAtPlayer()

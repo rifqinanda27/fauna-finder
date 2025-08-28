@@ -187,7 +187,11 @@ public class PlayerController : MonoBehaviour
         File.WriteAllText(jsonPath, JsonUtility.ToJson(data, true));
 
         Debug.Log($"Foto dan data tersimpan: {fullPath}");
+
+        // ✅ Tambahkan ini supaya objective selesai
+        ObjectiveManager.Instance.CompleteObjective(info.animalName);
     }
+
 
 
     // Di PlayerController
