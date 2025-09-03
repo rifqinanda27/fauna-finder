@@ -35,11 +35,21 @@ public class ObjectiveManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Tambahkan satu objektif baru.
+    /// Tambahkan satu objektif baru (hindari duplicate).
     /// </summary>
     public void AddObjective(string description)
     {
         if (string.IsNullOrEmpty(description)) return;
+
+        // cek dulu kalau sudah ada objektif yang sama (case insensitive)
+        foreach (var obj in objectives)
+        {
+            if (obj.description.Equals(description, System.StringComparison.OrdinalIgnoreCase))
+            {
+                Debug.Log($"⚠ Objective '{description}' sudah ada, tidak ditambahkan lagi.");
+                return;
+            }
+        }
 
         objectives.Add(new Objective(description));
         RefreshUI();
@@ -47,15 +57,30 @@ public class ObjectiveManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Tambahkan beberapa objektif sekaligus.
+    /// Tambahkan beberapa objektif sekaligus (hindari duplicate).
     /// </summary>
     public void AddObjectives(List<string> descriptions)
     {
         foreach (string desc in descriptions)
         {
-            if (!string.IsNullOrEmpty(desc))
+            if (string.IsNullOrEmpty(desc)) continue;
+
+            bool exists = false;
+            foreach (var obj in objectives)
+            {
+                if (obj.description.Equals(desc, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists)
                 objectives.Add(new Objective(desc));
+            else
+                Debug.Log($"⚠ Objective '{desc}' sudah ada, dilewati.");
         }
+
         RefreshUI();
         SaveObjectives();   // ⬅️ simpan setiap ada perubahan
     }
@@ -72,6 +97,8 @@ public class ObjectiveManager : MonoBehaviour
             {
                 obj.isCompleted = true;
                 Debug.Log("✅ Objective completed: " + obj.description);
+                RefreshUI();
+                SaveObjectives();
                 return;
             }
         }
@@ -115,7 +142,7 @@ public class ObjectiveManager : MonoBehaviour
         for (int i = 0; i < objectives.Count; i++)
         {
             PlayerPrefs.SetString(PP_DESC_PREFIX + i, objectives[i].description);
-            PlayerPrefs.SetInt   (PP_DONE_PREFIX + i, objectives[i].isCompleted ? 1 : 0);
+            PlayerPrefs.SetInt(PP_DONE_PREFIX + i, objectives[i].isCompleted ? 1 : 0);
         }
 
         PlayerPrefs.Save();
@@ -129,11 +156,10 @@ public class ObjectiveManager : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             string desc = PlayerPrefs.GetString(PP_DESC_PREFIX + i, string.Empty);
-            bool done   = PlayerPrefs.GetInt   (PP_DONE_PREFIX + i, 0) == 1;
+            bool done = PlayerPrefs.GetInt(PP_DONE_PREFIX + i, 0) == 1;
 
             if (!string.IsNullOrEmpty(desc))
             {
-                // Pakai class Objective milikmu yang sudah ada
                 Objective o = new Objective(desc);
                 o.isCompleted = done;
                 objectives.Add(o);
@@ -144,7 +170,7 @@ public class ObjectiveManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Opsional: hapus semua progress tersimpan (berguna saat testing).
+    /// Hapus semua progress tersimpan (berguna saat testing).
     /// </summary>
     public void ClearSavedObjectives()
     {
@@ -159,5 +185,13 @@ public class ObjectiveManager : MonoBehaviour
 
         objectives.Clear();
         RefreshUI();
+    }
+
+    /// <summary>
+    /// Alias untuk editor (biar bisa dipanggil lewat tombol Inspector).
+    /// </summary>
+    public void ClearAllObjectives()
+    {
+        ClearSavedObjectives();
     }
 }
