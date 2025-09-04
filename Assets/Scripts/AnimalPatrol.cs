@@ -2,17 +2,25 @@ using UnityEngine;
 
 public class AnimalPatrolChase : MonoBehaviour
 {
+    [Header("Patrol Settings")]
     public Transform[] waypoints;
     public float patrolSpeed = 2f;
-    public float chaseSpeed = 4f;
     public float stoppingDistance = 0.2f;
+
+    [Header("Chase Settings")]
+    public bool enableChase = true;      // ⬅️ bisa diatur lewat inspector
+    public float chaseSpeed = 4f;
     public float chaseRange = 5f;
-    public float stopChaseDistance = 1.5f; // Jarak berhenti saat terlalu dekat
+    public float stopChaseDistance = 1.5f;
+
+    [Header("Debug Info")]
+    [SerializeField] private bool isChasing = false; // status runtime
 
     private int currentWaypoint = 0;
     private Transform player;
     private Animator animator;
-    private bool isChasing = false;
+
+    public Transform respawnPoint;
 
     void Start()
     {
@@ -22,25 +30,29 @@ public class AnimalPatrolChase : MonoBehaviour
 
     void Update()
     {
+        if (!enableChase)
+        {
+            // Kalau chase dimatikan, selalu patroli
+            Patrol();
+            isChasing = false;
+            return;
+        }
+
         float distance = Vector3.Distance(transform.position, player.position);
 
         if (distance <= chaseRange)
         {
             isChasing = true;
         }
-        else if (distance > chaseRange + 1f) // sedikit buffer biar gak flicker
+        else if (distance > chaseRange + 1f) // buffer
         {
             isChasing = false;
         }
 
         if (isChasing)
-        {
             ChasePlayer();
-        }
         else
-        {
             Patrol();
-        }
     }
 
     void Patrol()
@@ -84,7 +96,7 @@ public class AnimalPatrolChase : MonoBehaviour
             transform.forward = dir;
 
         animator.SetBool("isWalking", false);
-        animator.SetBool("isRunning", true); // aktifkan animasi lari
+        animator.SetBool("isRunning", true);
     }
 
     void OnDrawGizmosSelected()
@@ -96,14 +108,15 @@ public class AnimalPatrolChase : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, stopChaseDistance);
     }
 
-    public Transform respawnPoint;
-
     private void OnTriggerEnter(Collider other)
     {
+        // 🚫 Kalau chase dimatikan, jangan respawn player
+        if (!enableChase) return;
+
         if (other.CompareTag("Player"))
         {
             PlayerController pc = other.GetComponent<PlayerController>();
-            if (pc != null)
+            if (pc != null && respawnPoint != null)
             {
                 pc.Respawn(respawnPoint.position);
             }

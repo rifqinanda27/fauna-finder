@@ -222,8 +222,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: b3aa72fb83080a942a7cf397f6860771, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1736,6 +1736,66 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!1001 &446877352
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3733071557484738934, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_Name
+      value: Soda can C
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072758611968631756, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072758611968631756, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072758611968631756, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -5.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072758611968631756, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072758611968631756, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072758611968631756, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072758611968631756, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072758611968631756, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072758611968631756, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4072758611968631756, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3733071557484738934, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1310009290}
+  m_SourcePrefab: {fileID: 100100000, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
 --- !u!1 &459954087
 GameObject:
   m_ObjectHideFlags: 0
@@ -3837,6 +3897,25 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f059b06d14d120142bafcbd7afdd4c5b, type: 3}
+--- !u!1 &1310009284 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3733071557484738934, guid: 6423086f4c3c91941b15347f806e5496, type: 3}
+  m_PrefabInstance: {fileID: 446877352}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1310009290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310009284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8760d8aa1ed91a40a897945b6e63bf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactKey: 101
+  interactRange: 2
 --- !u!1 &1353431383
 GameObject:
   m_ObjectHideFlags: 0
@@ -5623,10 +5702,12 @@ MonoBehaviour:
   - {fileID: 1688688309}
   - {fileID: 1223370633}
   patrolSpeed: 5
-  chaseSpeed: 10
   stoppingDistance: 2
+  enableChase: 1
+  chaseSpeed: 10
   chaseRange: 20
   stopChaseDistance: 1.5
+  isChasing: 1
   respawnPoint: {fileID: 963332536}
 --- !u!114 &2010306798
 MonoBehaviour:
@@ -5999,3 +6080,4 @@ SceneRoots:
   - {fileID: 963332536}
   - {fileID: 1913151032}
   - {fileID: 5111213}
+  - {fileID: 446877352}
