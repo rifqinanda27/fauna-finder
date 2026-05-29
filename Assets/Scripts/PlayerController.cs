@@ -32,6 +32,81 @@ public class PlayerController : MonoBehaviour
     public int photoWidth = 1920;
     public int photoHeight = 1080;
     public string photoSaveFolder; // folder dalam Assets
+    public GameObject cameraUIPanel;
+    public GameObject mainUIPanel; // Untuk menampung UI yang mau disembunyikan
+
+// --- TAMBAHAN UNTUK UI MOBILE ---
+
+// Variabel untuk mendeteksi apakah tombol sprint UI sedang aktif
+private bool isSprintUI = false;
+
+// 1. Tombol Buka Kamera
+public void OpenCameraUI()
+{
+    if (!isInPhotoMode)
+    {
+        SetPhotoMode(true);
+    }
+}
+
+// 2. Tombol Silang (Tutup Kamera)
+public void CloseCameraUI()
+{
+    if (isInPhotoMode)
+    {
+        SetPhotoMode(false);
+    }
+}
+
+// 3. Tombol Jepret Foto (Klik Kamera)
+public void TakePhotoUI()
+{
+    if (isInPhotoMode)
+    {
+        TakePhoto();
+    }
+}
+
+// 4. Tombol Sprint (Bisa pakai sistem Toggle: Tekan lari, tekan lagi jalan)
+public void ToggleSprintUI()
+{
+    isSprintUI = !isSprintUI;
+}
+
+// Fungsi pembantu agar kode lebih rapi (pindahkan logika 'F' ke sini)
+private void SetPhotoMode(bool active)
+{
+    isInPhotoMode = active;
+    fpsCam.gameObject.SetActive(isInPhotoMode);
+    cam.gameObject.SetActive(!isInPhotoMode);
+    fpsLook.isActive = isInPhotoMode;
+
+// --- BARIS BARU: Menyalakan/mematikan UI Kamera ---
+    if (cameraUIPanel != null) cameraUIPanel.SetActive(isInPhotoMode);
+    if (mainUIPanel != null) mainUIPanel.SetActive(!isInPhotoMode);
+
+    // Kursor (Lebih relevan untuk tes di PC)
+    Cursor.lockState = isInPhotoMode ? CursorLockMode.Locked : CursorLockMode.None;
+    Cursor.visible = !isInPhotoMode;
+
+    if (isInPhotoMode)
+    {
+        Vector3 camEuler = cam.eulerAngles;
+        fpsCamHolder.transform.eulerAngles = new Vector3(0f, camEuler.y, 0f);
+        fpsCam.transform.localEulerAngles = new Vector3(camEuler.x, 0f, 0f);
+        fpsLook.yaw = camEuler.y;
+        fpsLook.pitch = camEuler.x;
+    }
+    else
+        {
+            // Tambahkan "penawar" bug Event System seperti di Jurnal
+            // supaya setelah tutup kamera, tombol lari dkk tidak nge-bug kebal
+            if (UnityEngine.EventSystems.EventSystem.current != null)
+            {
+                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+            }
+        }
+}
 
     void Start()
     {
@@ -57,30 +132,16 @@ public class PlayerController : MonoBehaviour
         }
         // Toggle masuk mode FPS foto
         if (Input.GetKeyDown(KeyCode.F))
-        {
-            isInPhotoMode = !isInPhotoMode;
-            fpsCam.gameObject.SetActive(isInPhotoMode);
-            cam.gameObject.SetActive(!isInPhotoMode);
-
-            fpsLook.isActive = isInPhotoMode;
-
-            Cursor.lockState = isInPhotoMode ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !isInPhotoMode;
-
-            if (isInPhotoMode)
-            {
-                Vector3 camEuler = cam.eulerAngles;
-                fpsCamHolder.transform.eulerAngles = new Vector3(0f, camEuler.y, 0f);
-                fpsCam.transform.localEulerAngles = new Vector3(camEuler.x, 0f, 0f);
-                fpsLook.yaw = camEuler.y;
-                fpsLook.pitch = camEuler.x;
-            }
-        }
+{
+    if (isInPhotoMode) CloseCameraUI();
+    else OpenCameraUI();
+}
 
         if (!isInPhotoMode)
         {
-            // Deteksi sprint
-            currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+            // Cek apakah LeftShift ditekan ATAU isSprintUI sedang aktif
+    bool running = Input.GetKey(KeyCode.LeftShift) || isSprintUI;
+    currentSpeed = running ? runSpeed : walkSpeed;
 
             isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckDistance, groundMask);
             if (isGrounded && velocity.y < 0)
@@ -92,18 +153,21 @@ public class PlayerController : MonoBehaviour
 
             if (direction.magnitude >= 0.1f)
             {
-                bool running = Input.GetKey(KeyCode.LeftShift);
-
+                // Update status lari dari UI atau Keyboard
+                running = Input.GetKey(KeyCode.LeftShift) || isSprintUI;
                 currentSpeed = running ? runSpeed : walkSpeed;
 
+                // 1. Hitung rotasi karakter menghadap arah gerak (sesuai kamera)
                 float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
                 transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
 
+                // 2. Gerakkan karakter ke arah tersebut
                 Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
 
+                // 3. Mainkan Animasi
                 animator.SetBool("IsRunning", running);
-                animator.SetFloat("Speed", 1f); // 1f untuk jalan, Run diatur via IsRunning
+                animator.SetFloat("Speed", 1f); 
             }
             else
             {
@@ -116,10 +180,10 @@ public class PlayerController : MonoBehaviour
             controller.Move(velocity * Time.deltaTime);
         }
 
-        if (isInPhotoMode && Input.GetMouseButtonDown(0)) // Tombol kiri mouse
-        {
-            TakePhoto();
-        }
+        // if (isInPhotoMode && Input.GetMouseButtonDown(0)) // Tombol kiri mouse
+        // {
+        //     TakePhoto();
+        // }
     }
 
     

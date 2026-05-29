@@ -8,9 +8,18 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestingScene.unity
     guid: c52540542b9a1bb458b51819046c8678
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 67371e5511e231f42b1de5abf31023a6
+  - enabled: 1
+    path: Assets/Scenes/SavanaTerrain.unity
+    guid: e20c7ef857b188444b3242b7fc2b29c4
+  - enabled: 1
+    path: Assets/Scenes/CreditScene.unity
+    guid: 01072e7d1e2d7fd45b277f4b9eb452a1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

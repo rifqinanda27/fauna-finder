@@ -6,7 +6,7 @@ public class MainMenu : MonoBehaviour
     // Panggil di OnClick() masing-masing tombol
     public void PlayGame()
     {
-        SceneManager.LoadScene("GameScene"); // ganti sesuai nama scene gameplay
+        SceneManager.LoadScene("SavanaTerrain"); // ganti sesuai nama scene gameplay
     }
 
     public void OpenCredit()

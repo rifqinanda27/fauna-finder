@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement; // <- perlu untuk LoadScene
+using UnityEngine.EventSystems;
 
 public class JournalManager : MonoBehaviour
 {
     public GameObject journalCanvas;
+    public GameObject mainUIPanel;
 
     public GameObject panelObjectives;
     public GameObject panelPhotos;
@@ -45,13 +47,24 @@ public class JournalManager : MonoBehaviour
         isJournalOpen = !isJournalOpen;
         journalCanvas.SetActive(isJournalOpen);
 
+        if (mainUIPanel != null)
+        {
+            mainUIPanel.SetActive(!isJournalOpen);
+        }
+
         Time.timeScale = isJournalOpen ? 0f : 1f;
-        Cursor.lockState = isJournalOpen ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = isJournalOpen;
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         if (isJournalOpen)
         {
             OpenObjectives();
+        }
+        else
+        {
+            // Reset klik kalau jurnal ditutup lewat shortcut 'J'
+            EventSystem.current.SetSelectedGameObject(null); 
         }
     }
 
@@ -60,9 +73,22 @@ public class JournalManager : MonoBehaviour
         isJournalOpen = false;
         journalCanvas.SetActive(false);
 
+        if (mainUIPanel != null)
+        {
+            mainUIPanel.SetActive(true);
+        }
+
         Time.timeScale = 1f;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // --- INI OBAT PENAWARNYA ---
+        // Memaksa Event System mereset status klik yang nyangkut
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 
     public void OpenObjectives()
